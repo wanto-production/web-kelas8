@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { navigate } from "astro:transitions/client";
+
   type Link = {
     href: string;
     text: string;
@@ -10,9 +12,13 @@
     isOpen = !isOpen;
   }
 
+  function to(url: string) {
+    isOpen = false;
+    navigate(url);
+  }
+
   const url: Link = [
     { href: "/home", text: "Home" },
-    { href: "/galery", text: "Galeri" },
     { href: "/about", text: "Tentang" },
     { href: "/message", text: "Titip pesan" },
   ];
@@ -22,7 +28,9 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16 items-center">
       <!-- Logo -->
-      <a href="/" class="text-2xl font-bold text-white">8.10</a>
+      <button onclick={() => to("/")} class="text-2xl font-bold text-white">
+        8.10
+      </button>
 
       <!-- Hamburger (mobile) -->
       <button
@@ -36,9 +44,19 @@
       <!-- Links (desktop) -->
       <ul class="hidden lg:flex space-x-8 text-gray-300 font-medium">
         {#each url as { href, text }}
-          <li>
-            <a {href} class="hover:text-white transition">{text}</a>
-          </li>
+          {#if href == window.location.pathname}
+            <li>
+              <span class=" cursor-pointer hover:text-white transition">
+                {text}
+              </span>
+            </li>
+          {:else}
+            <li>
+              <a {href} class="hover:text-white transition">
+                {text}
+              </a>
+            </li>
+          {/if}
         {/each}
       </ul>
     </div>
@@ -54,9 +72,22 @@
       class="flex flex-col px-6 py-4 space-y-2 bg-gray-900 text-gray-300 font-medium"
     >
       {#each url as { href, text }}
-        <li>
-          <a {href} class="hover:text-white transition">{text}</a>
-        </li>
+        {#if href == window.location.pathname}
+          <li>
+            <span class="hover:text-white transition cursor-pointer"
+              >{text}</span
+            >
+          </li>
+        {:else}
+          <li>
+            <button
+              onclick={() => to(href)}
+              class="hover:text-white transition"
+            >
+              {text}
+            </button>
+          </li>
+        {/if}
       {/each}
     </ul>
   </div>

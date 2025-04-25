@@ -1,0 +1,45 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { Content } from "@/synopsis/index.md"
+
+const images = import.meta.glob("/src/assets/funny/*",{ eager: true })
+//@ts-ignore
+const imagePaths = Object.values(images).map((module) => module.default);
+---
+
+<Layout title="Home">
+  <main class="font-sans w-full">
+    <!-- Section: Home -->
+    <section class="w-full h-screen px-6 flex items-center flex-col justify-center gap-2">
+      <h1 class=" text-white text-2xl font-bold">photo book.</h1>
+      <!-- Container dengan CSS Grid -->
+      <div class="w-[90%] h-[80%] bg-gray-800 rounded-md p-5 flex flex-wrap justify-around overflow-y-auto overflow-x-hidden gap-5 ">
+
+        {imagePaths.map(({ src }, i) => (
+          <div class="w-fit h-fit overflow-hidden rounded-xl shadow-lg">
+            <img
+              src={src}
+              alt={`image-${i}`}
+              class="w-[300px] h-auto object-contain rounded-md"
+              loading="lazy"
+            />
+          </div>
+        ))}
+
+      </div>
+    </section>
+    <!-- Section: Synopsis Kelas 8.10 -->
+    <section class="w-full h-screen relative flex flex-col items-center gap-5 bg-gray-100 p-8 overflow-y-auto">
+      <img
+        src="/src/assets/vintage.jpeg"
+        alt="kelas"
+        class="w-full h-full max-sm:h-[1300px] object-cover object-center absolute top-0 z-0 pointer-events-none"
+      />
+      <h2 class="text-3xl font-bold mt-20 text-gray-800 z-10">Synopsis.</h2>
+        <div class="prose max-w-none my-auto z-10">
+          <Content/> 
+        </div> 
+    </section>
+  </main>
+</Layout>
+
