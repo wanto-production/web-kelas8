@@ -10,24 +10,25 @@ const imagePaths = Object.values(images).map((module) => module.default);
 <Layout title="Home">
   <main class="font-sans w-full">
     <!-- Section: Home -->
-    <section class="w-full h-screen px-6 flex items-center flex-col justify-center gap-2">
-      <h1 class=" text-white text-2xl font-bold">photo book.</h1>
-      <!-- Container dengan CSS Grid -->
-      <div class="w-[90%] h-[80%] bg-gray-800 rounded-md p-5 flex flex-wrap justify-around overflow-y-auto overflow-x-hidden gap-5 ">
+    <section class="w-full h-screen px-6 py-10 flex flex-col items-center justify-center gap-4 bg-[#111827]">
+      <h1 class="text-white text-3xl font-semibold tracking-wide">Photo Book.</h1>
 
-        {imagePaths.map(({ src }, i) => (
-          <div class="w-fit h-fit overflow-hidden rounded-xl shadow-lg">
-            <img
-              src={src}
-              alt={`image-${i}`}
-              class="w-[300px] h-auto object-contain rounded-md"
-              loading="lazy"
-            />
-          </div>
-        ))}
-
+      <div class="w-full max-w-7xl h-[725px] bg-gray-800 rounded-xl p-6 overflow-y-auto scrollbar-hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {imagePaths.map(({ src }, i) => (
+            <div class="overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-105">
+              <img
+                src={src}
+                alt={`image-${i}`}
+                class="w-full aspect-[4/3] object-cover rounded-xl"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
+
     <!-- Section: Synopsis Kelas 8.10 -->
     <section class="w-full h-screen relative flex flex-col items-center gap-5 bg-gray-100 p-8 overflow-y-auto">
       <img
