@@ -1,0 +1,24 @@
+---
+  import Layout from '@/layouts/Layout.astro';
+  import { Content } from "@/markdown/about.md"; // Konten tentang kelas diambil dari markdown
+---
+
+<Layout title="About">
+  <main class="font-sans w-full">
+    <!-- Section: Tentang Kelas -->
+    <section class="w-full h-screen px-6 py-10 flex flex-col items-center justify-center gap-4 bg-[#111827]">
+      <h1 class="text-white text-3xl font-semibold tracking-wide">Tujuan.</h1>
+      <p class="text-white text-lg mt-4 text-center max-w-2xl">
+        Kelas ini bertujuan untuk memberikan pemahaman mendalam tentang topik yang kami ajarkan. Kami menyatukan peserta dari berbagai latar belakang untuk berbagi pengalaman dan pengetahuan.
+      </p>
+    </section>
+
+    <!-- Section: Visi dan Misi Kelas -->
+    <section class="w-full h-screen relative flex flex-col items-center gap-5 bg-gray-100 p-8 scrollbar-hide overflow-y-auto"> 
+      <div class="prose max-w-none my-auto z-10"> 
+        <Content/> <!-- Konten tentang kelas yang diambil dari markdown -->
+      </div>
+    </section>
+  </main>
+</Layout>
+

@@ -10,6 +10,6 @@
 
   <!-- Copyright -->
   <p class="mt-3 text-gray-300 text-lg font-poppins font-bold">
-    {new Date().getFullYear()} &copy; Ikhwan Satrio
+    {new Date().getFullYear()} &copy; Ikhwan Satrio | 8.10
   </p>
 </footer>
