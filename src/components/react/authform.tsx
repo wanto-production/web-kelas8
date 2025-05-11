@@ -1,95 +1,94 @@
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/react/ui/tabs";
-import {
-  createFormHook,
-  createFormHookContexts,
-} from "@tanstack/react-form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/react/ui/tabs";
+import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
+import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import { z } from "zod"
 
 const { fieldContext, formContext } = createFormHookContexts();
 
 const { useAppForm } = createFormHook({
   fieldComponents: {
-    InputForm,
+    InputForm
   },
   formComponents: {
-    ButtonForm,
+    ButtonForm
   },
   fieldContext,
-  formContext,
+  formContext
 });
 
-type LoginValues = {
-  email: string;
-  password: string;
-};
+const loginSchema = z.object({
+  email: z.string().email().min(5, "it is really your email?"),
+  password: z.string().min(8, "password too short min length is 8!")
+})
 
-type RegisterValues = {
-  username: string;
-  email: string;
-  password: string;
-};
+const registerSchema = loginSchema.merge(z.object({
+  username: z.string().min(5, "your username too short, min length is 5")
+}))
+
 
 function InputForm({
   label,
+  icon: Icon,
+  error,
   ...props
-}: { label: string } & React.ComponentProps<"input">) {
+}: {
+  label: string;
+  icon: React.ElementType;
+  error?: any[];
+} & React.ComponentProps<"input">) {
   return (
-    <div className="space-y-1">
-      <label className="block text-sm text-purple-200 font-medium">
-        {label}
-      </label>
-      <input
-        {...props}
-        className="w-full px-4 py-2 rounded bg-purple-950 border border-purple-700 text-purple-100 placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-600"
-      />
+    <div className="relative space-y-1">
+      <div className="relative">
+        <Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-300" />
+        <input
+          {...props}
+          placeholder={label}
+          className="w-full pl-10 pr-4 py-2 rounded bg-purple-950 bg-opacity-40 border border-purple-700 text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-600"
+        />
+      </div>
+      {error && <p className="text-sm text-red-400">{error?.[0]?.message}</p>}
     </div>
   );
 }
+
 
 function ButtonForm({ children }: { children: React.ReactNode }) {
   return (
     <button
       type="submit"
-      className="w-full bg-purple-700 hover:bg-purple-600 text-white py-2 rounded font-medium"
+      className="w-full bg-gradient-to-r from-purple-600 to-indigo-700 hover:opacity-90 text-white py-2 rounded font-semibold"
     >
       {children}
     </button>
   );
 }
 
-// 🔒 Login Form
 function LoginForm() {
-  //@ts-ignore
-  const form = useAppForm<LoginValues>({
+  const form = useAppForm({
     defaultValues: {
       email: "",
       password: "",
+    } as z.infer<typeof loginSchema>,
+    validators: {
+      onChange: loginSchema,
+      onSubmit: loginSchema
     },
     onSubmit: ({ value }) => {
-      console.log("Login:", value);
-    },
+      console.log(value);
+    }
   });
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        form.handleSubmit(e);
-      }}
-      className="space-y-5 text-sm"
-    >
+    <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(e); }} className="space-y-4">
       <form.AppField name="email">
         {(field) => (
           <field.InputForm
             type="email"
-            placeholder="you@example.com"
             label="Email"
+            icon={FaEnvelope}
             value={field.state.value}
             onChange={(e) => field.handleChange(e.target.value)}
+            error={field.state.meta.errors}
           />
         )}
       </form.AppField>
@@ -98,49 +97,57 @@ function LoginForm() {
         {(field) => (
           <field.InputForm
             type="password"
-            placeholder="********"
             label="Password"
+            icon={FaLock}
             value={field.state.value}
             onChange={(e) => field.handleChange(e.target.value)}
+            error={field.state.meta.errors}
           />
         )}
       </form.AppField>
 
-      <form.ButtonForm>Login</form.ButtonForm>
+      {/* Button Group */}
+      <div className="flex gap-4">
+        <form.ButtonForm>Login</form.ButtonForm>
+        <button
+          type="button"
+          onClick={() => form.reset()}
+          className="w-full bg-red-500 hover:opacity-90 text-white py-2 rounded font-semibold"
+        >
+          Reset
+        </button>
+      </div>
     </form>
   );
 }
 
-// 📝 Register Form
 function RegisterForm() {
-  //@ts-ignore
-  const form = useAppForm<RegisterValues>({
+  const form = useAppForm({
     defaultValues: {
       username: "",
       email: "",
       password: "",
+    } as z.infer<typeof registerSchema>,
+    validators: {
+      onChange: registerSchema,
+      onSubmit: registerSchema,
     },
     onSubmit: ({ value }) => {
-      console.log("Register:", value);
-    },
+      console.log(value);
+    }
   });
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        form.handleSubmit(e);
-      }}
-      className="space-y-5 text-sm"
-    >
+    <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(e); }} className="space-y-4">
       <form.AppField name="username">
         {(field) => (
           <field.InputForm
             type="text"
-            placeholder="yourusername"
-            label="Username"
+            label="Full Name"
+            icon={FaUser}
             value={field.state.value}
             onChange={(e) => field.handleChange(e.target.value)}
+            error={field.state.meta.errors}
           />
         )}
       </form.AppField>
@@ -149,10 +156,11 @@ function RegisterForm() {
         {(field) => (
           <field.InputForm
             type="email"
-            placeholder="you@example.com"
             label="Email"
+            icon={FaEnvelope}
             value={field.state.value}
             onChange={(e) => field.handleChange(e.target.value)}
+            error={field.state.meta.errors}
           />
         )}
       </form.AppField>
@@ -161,50 +169,64 @@ function RegisterForm() {
         {(field) => (
           <field.InputForm
             type="password"
-            placeholder="********"
             label="Password"
+            icon={FaLock}
             value={field.state.value}
             onChange={(e) => field.handleChange(e.target.value)}
+            error={field.state.meta.errors}
           />
         )}
       </form.AppField>
 
-      <form.ButtonForm>Register</form.ButtonForm>
+      {/* Button Group */}
+      <div className="flex gap-4">
+        <form.ButtonForm>Sign Up</form.ButtonForm>
+        <button
+          type="button"
+          onClick={() => form.reset()}
+          className="w-full bg-red-500 hover:opacity-90 text-white py-2 rounded font-semibold"
+        >
+          Reset
+        </button>
+      </div>
     </form>
   );
 }
 
-// 🌑 Main Component with Tabs
 export default function AuthTabs() {
   return (
-    <div className="w-full min-h-screen bg-[#1A132F] flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-purple-900 p-6 rounded-xl shadow-2xl">
-        <Tabs defaultValue="register" className="w-full">
-          <TabsList className="flex gap-2 items-center mb-6 h-fit p-2  bg-purple-800 rounded  ">
-            <TabsTrigger
-              value="register"
-              className="data-[state=active]:bg-white data-[state=active]:text-purple-800 text-white py-2 rounded"
-            >
-              Register
-            </TabsTrigger>
+    <div className="w-full max-w-md mx-auto bg-[#0f0c29] p-8 rounded-xl shadow-2xl text-white space-y-6">
+      <h2 className="text-2xl font-bold text-center">Create Account</h2>
+      <p className="text-center text-sm text-purple-300">Create your account now!</p>
 
-            <TabsTrigger
-              value="login"
-              className="data-[state=active]:bg-white data-[state=active]:text-purple-800 text-white py-2 rounded"
-            >
-              Login
-            </TabsTrigger>
-          </TabsList>
+      <Tabs defaultValue="register" className="w-full">
+        <TabsList className="grid grid-cols-2 bg-purple-800 rounded mb-6 text-white">
+          <TabsTrigger value="login">Login</TabsTrigger>
+          <TabsTrigger value="register">Register</TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="register">
-            <RegisterForm />
-          </TabsContent>
+        <TabsContent value="login">
+          <LoginForm />
+        </TabsContent>
 
-          <TabsContent value="login">
-            <LoginForm />
-          </TabsContent>
+        <TabsContent value="register">
+          <RegisterForm />
+        </TabsContent>
+      </Tabs>
 
-        </Tabs>
+      <div className="text-center text-sm text-purple-300">
+        Already have an account? <a href="#" className="text-purple-400 underline">Login</a>
+      </div>
+
+      <div className="flex gap-4 justify-center">
+        <button className="flex-1 bg-white text-black py-2 rounded flex items-center justify-center gap-2 font-semibold">
+          <i className="fab fa-google"></i>
+          Google
+        </button>
+        <button className="flex-1 bg-blue-600 text-white py-2 rounded flex items-center justify-center gap-2 font-semibold">
+          <i className="fab fa-facebook"></i>
+          Facebook
+        </button>
       </div>
     </div>
   );
