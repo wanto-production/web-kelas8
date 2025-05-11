@@ -21,6 +21,9 @@ export default defineConfig({
       }),
       SECRET_DATABASE_TOKEN: envField.string({
         context: "server", access: "secret",
+      }),
+      BETTER_AUTH_URL: envField.string({
+        context: "client", access: "public"
       })
     }
   },
