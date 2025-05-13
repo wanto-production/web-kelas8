@@ -1,0 +1,46 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { Content } from "@/markdown/synopsis.md"
+
+const images = import.meta.glob("/src/assets/funny/*",{ eager: true })
+//@ts-ignore
+const imagePaths = Object.values(images).map((module) => module.default);
+---
+
+<Layout title="Home">
+  <main class="font-sans w-full">
+    <!-- Section: Home -->
+    <section class="w-full h-screen px-6 py-10 flex flex-col items-center justify-center gap-4 bg-[#111827]">
+      <h1 class="text-white text-3xl font-semibold tracking-wide">Photo Book.</h1>
+
+      <div class="w-full max-w-7xl scrollbar-hide h-[500px] bg-gray-800 rounded-xl p-6 overflow-y-auto scrollbar-hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {imagePaths.map(({ src }, i) => (
+            <div class="overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-105">
+              <img
+                src={src}
+                alt={`image-${i}`}
+                class="w-full aspect-[4/3] object-cover rounded-xl"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Synopsis Kelas 8.10 -->
+    <section class="w-full h-screen relative flex flex-col items-center gap-5 bg-gray-100 p-8 scrollbar-hide overflow-y-auto">
+      <img
+        src="/src/assets/vintage.jpeg"
+        alt="kelas"
+        class="w-full h-full max-sm:h-[1300px] object-cover object-center absolute top-0 z-0 pointer-events-none"
+      />
+      <h2 class="text-3xl font-bold mt-20 text-gray-800 z-10">Synopsis.</h2>
+        <div class="prose max-w-none my-auto z-10">
+          <Content/> 
+        </div> 
+    </section>
+  </main>
+</Layout>
+

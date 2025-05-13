@@ -18,7 +18,6 @@ export function Form() {
     axios.get("/api/message/get")
       .then(res => {
         setPesan(res.data.messages)
-        console.log(res.data)
       })
   }, [])
 

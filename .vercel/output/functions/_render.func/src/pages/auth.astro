@@ -1,0 +1,17 @@
+---
+  import Layout from "@/layouts/Layout.astro"
+  import AuthTabs from "@/components/react/authform.tsx"
+  import { auth } from "@/lib/auth"
+
+  const session = await auth.api.getSession({
+    headers: Astro.request.headers
+  })
+ 
+  if(session?.user) return Astro.redirect("/home")
+---
+
+<Layout title="login" keywords={["web kelas 8.10 login","web kelas 8.10"]} description="login page of web 8.10">
+  <main class="w-full min-h-screen bg-[#1e1b2e] text-white flex items-center justify-center px-4">
+    <AuthTabs client:idle/>
+  </main>
+</Layout>

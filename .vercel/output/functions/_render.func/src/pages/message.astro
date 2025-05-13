@@ -1,0 +1,13 @@
+---
+import Layout from "@/layouts/Layout.astro";
+
+import {Form} from "@/components/react/titippesan.tsx"
+---
+
+<Layout title="Titip Pesan" description="Place for message board class 8.10" keywords={["titip pesan", "web 8.10"]}>
+  <main class="w-full min-h-screen bg-[#1e1b2e] text-white flex flex-col items-center justify-center px-4 py-10">
+    <!-- Form Titip Pesan -->
+    <Form client:idle/>  
+  </main>
+</Layout>
+
