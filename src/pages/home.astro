@@ -13,7 +13,7 @@ const imagePaths = Object.values(images).map((module) => module.default);
     <section class="w-full h-screen px-6 py-10 flex flex-col items-center justify-center gap-4 bg-[#111827]">
       <h1 class="text-white text-3xl font-semibold tracking-wide">Photo Book.</h1>
 
-      <div class="w-full max-w-7xl scrollbar-hide h-[725px] bg-gray-800 rounded-xl p-6 overflow-y-auto scrollbar-hidden">
+      <div class="w-full max-w-7xl scrollbar-hide h-[500px] bg-gray-800 rounded-xl p-6 overflow-y-auto scrollbar-hidden">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {imagePaths.map(({ src }, i) => (
             <div class="overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-105">

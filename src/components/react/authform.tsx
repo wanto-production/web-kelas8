@@ -1,5 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/react/ui/tabs";
+import { authClient } from "@/lib/auth-client";
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
+import { navigate } from "astro:transitions/client";
+import { useState } from "react";
 import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 import { z } from "zod"
 
@@ -64,6 +67,7 @@ function ButtonForm({ children }: { children: React.ReactNode }) {
 }
 
 function LoginForm() {
+  const [error, setError] = useState<string | undefined>()
   const form = useAppForm({
     defaultValues: {
       email: "",
@@ -73,8 +77,18 @@ function LoginForm() {
       onChange: loginSchema,
       onSubmit: loginSchema
     },
-    onSubmit: ({ value }) => {
-      console.log(value);
+    onSubmit: ({ value: { email, password } }) => {
+      authClient.signIn.email({
+        email,
+        password
+      }, {
+        onError: (ctx) => {
+          setError(ctx.error.message)
+        },
+        onSuccess: () => {
+          navigate("/message")
+        }
+      })
     }
   });
 
@@ -117,11 +131,15 @@ function LoginForm() {
           Reset
         </button>
       </div>
+      {error && (
+        <span className="text-red-400 text-sm">{error}</span>
+      )}
     </form>
   );
 }
 
 function RegisterForm() {
+  const [error, setError] = useState<string | undefined>()
   const form = useAppForm({
     defaultValues: {
       username: "",
@@ -132,8 +150,19 @@ function RegisterForm() {
       onChange: registerSchema,
       onSubmit: registerSchema,
     },
-    onSubmit: ({ value }) => {
-      console.log(value);
+    onSubmit: ({ value: { email, password, username } }) => {
+      authClient.signUp.email({
+        email,
+        password,
+        name: username,
+      }, {
+        onError: (ctx) => {
+          setError(ctx.error.message)
+        },
+        onSuccess: () => {
+          navigate("/message")
+        }
+      })
     }
   });
 
@@ -189,6 +218,9 @@ function RegisterForm() {
           Reset
         </button>
       </div>
+      {error && (
+        <span className="text-red-400 text-sm">{error}</span>
+      )}
     </form>
   );
 }
@@ -213,10 +245,6 @@ export default function AuthTabs() {
           <RegisterForm />
         </TabsContent>
       </Tabs>
-
-      <div className="text-center text-sm text-purple-300">
-        Already have an account? <a href="#" className="text-purple-400 underline">Login</a>
-      </div>
 
       <div className="flex gap-4 justify-center">
         <button className="flex-1 bg-white text-black py-2 rounded flex items-center justify-center gap-2 font-semibold">

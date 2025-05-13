@@ -1,4 +1,6 @@
+import { randomUUID } from "crypto";
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sql } from "drizzle-orm"
 
 export const user = sqliteTable("user", {
  id: text('id').primaryKey(),
@@ -46,4 +48,12 @@ export const verification = sqliteTable("verification", {
  updatedAt: integer('updated_at', { mode: 'timestamp' })
 });
 
-export const schema = { user, session, account, verification }
+export const message = sqliteTable("message", {
+ id: text("id").primaryKey(),
+ content: text("content").notNull(),
+ createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(sql`CURRENT_TIMESTAMP`),
+ updatedAt: integer("updated_at", { mode: "timestamp" }).notNull().default(sql`CURRENT_TIMESTAMP`),
+ userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" })
+});
+
+export const schema = { user, message, session, account, verification }
