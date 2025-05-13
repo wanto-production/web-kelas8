@@ -1,7 +1,7 @@
 import { db } from "@/lib/server/db";
 import { message } from "@/lib/server/schema";
 import type { APIRoute } from "astro";
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 
 export const POST: APIRoute = async ({ request, locals }) => {
   const body = await request.json()
