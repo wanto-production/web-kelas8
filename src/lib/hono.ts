@@ -6,13 +6,14 @@ import { db } from "./server/db";
 import { message, user } from "./server/schema";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto"
+import { BETTER_AUTH_URL } from "astro:env/client";
 
 const router = new Hono<{
   Variables: {
     user: typeof auth.$Infer.Session.user | null;
     session: typeof auth.$Infer.Session.session | null
   }
-}>().use(cors())
+}>().use(cors({ origin: BETTER_AUTH_URL }))
 
 router.use("*", async (c, next) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
@@ -32,9 +33,6 @@ router.use("*", async (c, next) => {
 router.on(["POST", "GET"], "/auth/*", async (c) => {
   return auth.handler(c.req.raw);
 });
-
-
-router.get("/hello", async (c) => c.text("wassup!"))
 
 router.get("/getsession", async (c) => {
   return c.json<{ user: User | null, session: Session | null }>({
