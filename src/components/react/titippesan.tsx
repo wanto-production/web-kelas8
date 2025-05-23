@@ -16,9 +16,7 @@ export function Form() {
 
   const fetchPesan = useCallback(() => {
     axios.get("/api/message/get")
-      .then(res => {
-        setPesan(res.data.messages)
-      })
+      .then(res => setPesan(res.data.messages))
   }, [])
 
   const fetchUser = useCallback(() => {
